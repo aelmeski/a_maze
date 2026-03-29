@@ -8,8 +8,8 @@ class MazeData:
         self.height = 0
         self.entery = (0, 0)
         self.exit = (0, 0)
-        self.output_file=""
-        self.perfect=True
+        self.output_file = ""
+        self.perfect = True
 
     def validate(self) -> str | None:
         """Validate maze data and return error message or None if valid."""
@@ -23,8 +23,7 @@ class MazeData:
             return f"the height '{self.height}' should be more or equal to 10!"
         if self.height > 100:
             return f"the height '{self.height}' should be less then or equal to 100!"
-        if (self.entery[0] < 0 or self.entery[0] >= self.width or
-            self.entery[1] < 0 or self.entery[1] >= self.height):
+        if (self.entery[0] < 0 or self.entery[0] >= self.width or self.entery[1] < 0 or self.entery[1] >= self.height):
             return f"the entry point {self.entery} is not in the maze map."
         if (self.exit[0] < 0 or self.exit[0] >= self.width or
             self.exit[1] < 0 or self.exit[1] >= self.height):
@@ -122,7 +121,7 @@ class Parsing:
             else:
                 self.erorr = f"Unkown Line '{line}'"
                 return None
-        
+
         error: str | None = maze_data.validate()
         if error:
             self.error = error
@@ -147,7 +146,7 @@ class Parsing:
         try:
             num = int(value)
             return num
-        except (ValueError) as e:
+        except (ValueError):
             self.error = f"invalid int value '{value}'"
             return None
 
