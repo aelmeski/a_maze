@@ -1,3 +1,4 @@
+import sys
 
 class MazeData:
     """Data container for maze configuration parameters."""
@@ -10,6 +11,7 @@ class MazeData:
         self.exit = (0, 0)
         self.output_file = ""
         self.perfect = True
+        self.seed: int | None = None
 
     def validate(self) -> str | None:
         """Validate maze data and return error message or None if valid."""
@@ -37,24 +39,29 @@ class Parsing:
     def __init__(self) -> None:
         """Initialize parser with default settings."""
         self.error = "no error!"
-        self.file_path = "config.txt"
+        self.file_path = ""
         self.parameters: tuple[str] = (
             "WIDTH",
             "HEIGHT",
             "ENTRY",
             "EXIT",
             "OUTPUT_FILE",
-            "PERFECT"
+            "PERFECT",
+            "SEED"
         )
-    
+
     def __get_file_data(self) -> list[str] | None:
         """Read and return lines from the configuration file."""
         lines: list[str] = []
         try:
+            if len(sys.argv) != 2:
+                self.error = "wrong arguments!"
+                return None
+            self.file_path = sys.argv[1]
             with open(self.file_path, "r") as file:
                 lines = file.readlines()
         except (FileNotFoundError, Exception) as error:
-            self.error = "could not find config file!"
+            self.error = str(error)
             return None
         return lines
 
@@ -65,7 +72,7 @@ class Parsing:
         lines: list[str] = self.__get_file_data()
         if not lines:
             return None
-        
+
         for line in lines:
             if not line.strip() or line.startswith("#"):
                 continue
@@ -74,7 +81,7 @@ class Parsing:
             if len(values) != 2:
                 self.error = f"invalid format in line: '{line}'"
                 return None
-            
+
             if values[0] not in self.parameters:
                 self.error = f"unknown parameter '{values[0]}'"
                 return None
@@ -90,7 +97,7 @@ class Parsing:
                 if not num:
                     return None
                 maze_data.height = num
-            
+
             elif values[0] == "ENTRY":
                 xy: tuple | None = self.__is_xy(values[1])
                 if xy is None:
@@ -108,7 +115,7 @@ class Parsing:
                     self.error = f"Invalid Output File '{values[1]}'"
                     return None
                 maze_data.output_file = values[1]
-            
+
             elif values[0] == "PERFECT":
                 if values[1] == "True":
                     maze_data.perfect = True
@@ -117,6 +124,15 @@ class Parsing:
                 else:
                     self.erorr = f"Invalid Perfect Value '{values[1]}'"
                     return None
+            elif values[0] == "SEED":
+                if values[1] == "None":
+                    maze_data.seed = None
+                else:
+                    try:
+                        maze_data.seed = int(values[1])
+                    except (Exception):
+                        self.error = f"Invalid int value '{values[1]}'!."
+                        return None
 
             else:
                 self.erorr = f"Unkown Line '{line}'"

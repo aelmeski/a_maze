@@ -77,6 +77,8 @@ class Display:
             self.screen.addstr(box_y+2, box_x+1, "██", curses.color_pair(1))
         if cell.W:
             self.screen.addstr(box_y+1, box_x, "█", curses.color_pair(1))
+        if cell.is42:
+            self.screen.addstr(box_y+1, box_x+1, "██", curses.color_pair(2))
 
     def set_choices(self) -> None:
         y = len(self.maze) * 2

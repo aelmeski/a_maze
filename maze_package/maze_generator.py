@@ -26,10 +26,42 @@ class MazeGenerator:
         self.exit: tuple = (0, 0)
         self.perfect = False
         self.maze: list[list[Cell]] = []
+        self.seed: int | None = None
+
+    def set_patern_42(self):
+        y = (self.width // 2) - 3
+        x = (self.height // 2) - 2
+
+        for i in range(3):
+            self.maze[x + i][y].visited = True
+            self.maze[x + i][y].is42 = True
+
+            self.maze[x + i][y + 6].visited = True
+            self.maze[x + i][y + 6].is42 = True
+
+            self.maze[x + 2][y + i].visited = True
+            self.maze[x + 2][y + i].is42 = True
+
+            self.maze[x + 2][y + i + 4].visited = True
+            self.maze[x + 2][y + i + 4].is42 = True
+
+            self.maze[x][y + i + 4].visited = True
+            self.maze[x][y + i + 4].is42 = True
+
+            self.maze[x + 4][y + i + 4].visited = True
+            self.maze[x + 4][y + i + 4].is42 = True
+
+            self.maze[x + 2 + i][y + 2].visited = True
+            self.maze[x + 2 + i][y + 2].is42 = True
+
+            self.maze[x + 2 + i][y + 4].visited = True
+            self.maze[x + 2 + i][y + 4].is42 = True
 
     def generate_maze(self) -> list[list[Cell]]:
         self.maze = [
             [Cell() for _ in range(self.width)] for _ in range(self.height)]
+
+        self.set_patern_42()
 
         stack = []
         start_x, start_y = self.entry
@@ -41,7 +73,21 @@ class MazeGenerator:
             neighbors = self._get_unvisited_neighbors(x, y)
 
             if neighbors:
-                next_cell = random.choice(neighbors)
+                random.shuffle(neighbors)
+
+                if (
+                        not self.perfect
+                        and len(neighbors) > 1
+                        and random.random() > 0.8
+                        ):
+                    tnx, tny, direction = neighbors[1]
+                    try:
+                        if not self.maze[tnx][tny].visited:
+                            self._remove_wall(x, y, tnx, tny, direction)
+                    except (Exception):
+                        pass
+
+                next_cell = neighbors[0]
                 nx, ny, direction = next_cell
                 stack.append(current)
                 self._remove_wall(x, y, nx, ny, direction)
@@ -87,3 +133,5 @@ class MazeGenerator:
         self.entry = maze_data.entery
         self.exit = maze_data.exit
         self.perfect = maze_data.perfect
+        self.seed = maze_data.seed
+        random.seed(self.seed)

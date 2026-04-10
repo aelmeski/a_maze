@@ -1,5 +1,5 @@
 import curses
-from maze_package import Parsing, MazeGenerator, Display, FindPath
+from maze_package import Parsing, MazeGenerator, Display, FindPath, SaveMaze
 
 
 def main(stdscr):
@@ -18,6 +18,11 @@ def main(stdscr):
     bfs = FindPath()
     bfs.set_maze_data(data)
 
+    save_maze = SaveMaze()
+    save_maze.set_output_file(data.output_file)
+    save_maze.set_enter(data.entery)
+    save_maze.set_exit(data.exit)
+
     def generate_maze():
         maze = maze_generator.generate_maze()
         bfs.set_maze(maze)
@@ -25,6 +30,10 @@ def main(stdscr):
         display.set_maze(maze)
         display.set_path(path)
         display.display()
+
+        save_maze.set_maze(maze)
+        save_maze.set_path(path)
+        save_maze.save_to_file()
 
     generate_maze()
 
