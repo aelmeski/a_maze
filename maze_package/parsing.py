@@ -82,7 +82,7 @@ class Parsing:
 
     def __init__(self) -> None:
         """Initialize parser with default settings."""
-        self.error = "hey !"
+        self.error = "somthings went wrong !!"
         self.file_path = ""
         self.parameters: tuple[str] = (
             "WIDTH",
@@ -153,12 +153,14 @@ class Parsing:
             elif values[0] == "ENTRY":
                 xy: tuple | None = self.__is_xy(values[1])
                 if xy is None:
+                    self.error = f"Invalid entry value '{values[1]}'"
                     return None
                 maze_data.entery = xy
 
             elif values[0] == "EXIT":
                 xy: tuple | None = self.__is_xy(values[1])
                 if xy is None:
+                    self.error = f"Invalid exit value '{values[1]}'"
                     return None
                 maze_data.exit = xy
 
@@ -174,9 +176,8 @@ class Parsing:
                 elif values[1] == "False":
                     maze_data.perfect = False
                 else:
-                    self.erorr = f"Invalid Perfect Value '{values[1]}'"
+                    self.error = f"Invalid Perfect Value '{values[1]}'"
                     return None
-            
             elif values[0] == "SEED":
                 if values[1] == "None":
                     maze_data.seed = None
@@ -188,7 +189,7 @@ class Parsing:
                         return None
 
             else:
-                self.erorr = f"Unkown Line '{line}'"
+                self.error = f"Unkown Line '{line}'"
                 return None
 
         error: str | None = maze_data.validate()
