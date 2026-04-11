@@ -6,16 +6,30 @@ class MazeData:
 
     def __init__(self) -> None:
         """Initialize maze data with default values."""
-        self.width = 0
-        self.height = 0
-        self.entery = (0, 0)
-        self.exit = (0, 0)
-        self.output_file = ""
-        self.perfect = True
+        self.width: int | None = None
+        self.height: int | None = None
+        self.entery: tuple | None = None
+        self.exit: tuple | None = None
+        self.output_file: str | None = None
+        self.perfect: bool | None = None
         self.seed: int | None = None
 
     def validate(self) -> str | None:
         """Validate maze data and return error message or None if valid."""
+
+        if self.width is None:
+            return "the width is missing!"
+        if self.height is None:
+            return "the height is missing!"
+        if self.entery is None:
+            return "the entery is missing!"
+        if self.exit is None:
+            return "the exit is missing!"
+        if self.output_file is None:
+            return "the output_file is missing!"
+        if self.perfect is None:
+            return "the perfect is missing!"
+
         if self.entery == self.exit:
             return "the entry and exit should not be the same."
         if self.width < 10:
@@ -31,7 +45,36 @@ class MazeData:
         if (self.exit[0] < 0 or self.exit[0] >= self.width or
             self.exit[1] < 0 or self.exit[1] >= self.height):
             return f"the exit point {self.exit} is not in the maze map."
+
+        if (self.is_in_patern42(self.entery)):
+            return "the entry can't be above the patern 42!"
+        if (self.is_in_patern42(self.exit)):
+            return "the exit can't be above the patern 42!"
+
         return None
+
+    def is_in_patern42(self, point: tuple) -> bool:
+        """Check whether a point lies inside the blocked 42 pattern."""
+        x = (self.height - 5) // 2
+        y = (self.width - 7) // 2
+        for i in range(3):
+            if point == (x + i, y):
+                return True
+            if point == (x + i, y + 6):
+                return True
+            if point == (x + 2, y + i):
+                return True
+            if point == (x + 2, y + i + 4):
+                return True
+            if point == (x, y + i + 4):
+                return True
+            if point == (x + 4, y + i + 4):
+                return True
+            if point == (x + 2 + i, y + 2):
+                return True
+            if point == (x + 2 + i, y + 4):
+                return True
+        return False
 
 
 class Parsing:
@@ -59,15 +102,18 @@ class Parsing:
                 self.error = "wrong arguments!"
                 return None
             self.file_path = sys.argv[1]
+            if not self.file_path.endswith(".txt"):
+                self.error = "the config file should be '.txt'!"
+                return None
             with open(self.file_path, "r") as file:
                 lines = file.readlines()
             if not lines:
                 raise ValueError
         except ValueError:
-            self.error = str("file config.txt is empty")
+            self.error = str("file 'config.txt' is empty")
             return None
         except (FileNotFoundError, Exception):
-            self.error = str("file config.txt not found")
+            self.error = str("file 'config.txt' not found")
             return None
         return lines
 
@@ -130,6 +176,7 @@ class Parsing:
                 else:
                     self.erorr = f"Invalid Perfect Value '{values[1]}'"
                     return None
+            
             elif values[0] == "SEED":
                 if values[1] == "None":
                     maze_data.seed = None

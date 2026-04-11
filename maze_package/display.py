@@ -5,7 +5,10 @@ import random
 
 
 class Display:
+    """Render the maze and menu in a curses screen."""
+
     def __init__(self, screen) -> None:
+        """Initialize display state and curses color pairs."""
         self.maze: list[list[Cell]] = []  # here we have the maze data
         self.screen = screen  # this where the maze screen is been stored
 
@@ -25,6 +28,7 @@ class Display:
         self.x = 10
 
     def change_colors(self) -> None:
+        """Shuffle the maze color palette and redraw the screen."""
         colors = [curses.COLOR_BLUE, curses.COLOR_GREEN, curses.COLOR_RED]
         random.shuffle(colors)
         curses.init_pair(1, colors[0], 0)
@@ -33,16 +37,20 @@ class Display:
         self.display()
 
     def set_maze(self, maze: list[list[Cell]]) -> None:
+        """Store the maze grid for rendering."""
         self.maze = maze
 
     def set_path(self, path: list[tuple]) -> None:
+        """Store the computed path to optionally draw."""
         self.path = path
 
     def show_hide_path(self):
+        """Toggle path visibility and refresh the display."""
         self.show_path = not self.show_path
         self.display()
 
     def __print_path(self):
+        """Draw the current solution path inside the maze."""
         for i in range(len(self.path)):
             x1 = self.path[i][0] * 4 + 1
             y1 = self.path[i][1] * 2 + 1
@@ -57,9 +65,11 @@ class Display:
                                    curses.color_pair(2))
 
     def set_maze_data(self, maze_data: MazeData) -> None:
+        """Set metadata that includes entry and exit coordinates."""
         self.maze_data = maze_data
 
     def print_box(self, x, y, cell: Cell) -> None:
+        """Draw one maze cell and its walls at screen coordinates."""
         box_x = x * 4
         box_y = y * 2
 
@@ -81,6 +91,7 @@ class Display:
             self.screen.addstr(box_y+1, box_x+1, "██", curses.color_pair(2))
 
     def set_choices(self) -> None:
+        """Render the command menu below the maze."""
         y = len(self.maze) * 2
         self.screen.addstr(y+1, 0, "=== A-Maze-ing ===")
         self.screen.addstr(y+2, 0, "1. Re-generate a new maze")
@@ -90,6 +101,7 @@ class Display:
         self.screen.addstr(y+6, 0, "Choice? (1-4):")
 
     def set_enter_exit(self) -> None:
+        """Highlight the entry and exit points in the maze."""
         x1 = self.maze_data.entery[0] * 4 + 1
         y1 = self.maze_data.entery[1] * 2 + 1
         self.screen.addstr(y1, x1, "██", curses.color_pair(2))
@@ -99,6 +111,7 @@ class Display:
         self.screen.addstr(y2, x2, "██", curses.color_pair(3))
 
     def display(self) -> None:
+        """Redraw the maze, optional path, and user menu."""
         try:
             self.screen.clear()
 
@@ -121,10 +134,13 @@ class Display:
             self.screen.refresh()
 
     def get_pressed_key(self) -> int:
+        """Return the next pressed key from the screen."""
         return self.screen.getch()
 
     def __del__(self) -> None:
+        """Ensure display resources are closed on deletion."""
         self.close()
 
     def close(self):
+        """Close display resources if cleanup is needed."""
         pass

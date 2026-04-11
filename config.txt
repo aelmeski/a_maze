@@ -1,10 +1,11 @@
 # this is comment!
 
 WIDTH=10
+WIDTH=10
 HEIGHT=10
 ENTRY=0,0
 EXIT=9,9
 OUTPUT_FILE=maze.txt
-PERFECT=True
+PERFECT=False
 #SEED=qbd
 #daplicat/ (6.3) exit in the 42 pattern / erros mesge

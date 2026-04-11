@@ -3,6 +3,7 @@ from maze_package import Parsing, MazeGenerator, Display, FindPath, SaveMaze
 
 
 def main(stdscr):
+    """Run the interactive maze generation application."""
     try:
         parsing = Parsing()
         data = parsing.parse()

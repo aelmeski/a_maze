@@ -4,19 +4,25 @@ from .parsing import MazeData
 
 
 class FindPath:
+    """Find a path from entry to exit using breadth-first search."""
+
     def __init__(self) -> None:
+        """Initialize maze and endpoint placeholders."""
         self.maze: list[list[Cell]] = None
         self.entry: tuple = (0, 0)
         self.exit: tuple = (0, 0)
 
     def set_maze(self, maze: list[list[Cell]]) -> None:
+        """Set the maze grid to search through."""
         self.maze = maze
 
     def set_maze_data(self, maze_data: MazeData) -> None:
+        """Set entry and exit coordinates from parsed data."""
         self.entry = maze_data.entery
         self.exit = maze_data.exit
 
     def get_path(self) -> list[tuple] | None:
+        """Return the shortest valid path or None when unreachable."""
         if not self.maze:
             return None
 
@@ -58,6 +64,7 @@ class FindPath:
         return None
 
     def _reconstruct_path(self, visited: dict) -> list[tuple]:
+        """Build the path by backtracking from exit to entry."""
         path = []
         current = self.exit
         while current is not None:

@@ -1,7 +1,10 @@
 
 
 class SaveMaze:
+    """Persist maze data and solved path to an output file."""
+
     def __init__(self):
+        """Initialize output and maze serialization fields."""
         self.maze = None
         self.path = None
         self.enter = None
@@ -9,21 +12,27 @@ class SaveMaze:
         self.output_file = ""
 
     def set_output_file(self, output_file) -> None:
+        """Set the destination file path for maze export."""
         self.output_file = output_file
 
     def set_enter(self, enter) -> None:
+        """Set the maze entry coordinate."""
         self.enter = enter
 
     def set_exit(self, exit) -> None:
+        """Set the maze exit coordinate."""
         self.exit = exit
 
     def set_maze(self, maze) -> None:
+        """Set the maze grid to serialize."""
         self.maze = maze
 
     def set_path(self, path) -> None:
+        """Set the solved path to append in the export."""
         self.path = path
 
     def save_to_file(self) -> None:
+        """Write maze walls, endpoints, and path directions to disk."""
         with open(self.output_file, 'w') as file:
             base16 = "0123456789ABCDEF"
             for array in self.maze:
@@ -52,6 +61,7 @@ class SaveMaze:
 
     @staticmethod
     def get_deration(point1, point2) -> str:
+        """Return movement direction from point1 to point2."""
         a = point1[0] - point2[0]
         b = point1[1] - point2[1]
         if a > 0:

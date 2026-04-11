@@ -3,7 +3,10 @@ from .parsing import MazeData
 
 
 class Cell:
+    """Represent one maze cell with wall and state flags."""
+
     def __init__(self) -> None:
+        """Initialize a closed, unvisited cell."""
         self.N = True
         self.E = True
         self.S = True
@@ -12,6 +15,7 @@ class Cell:
         self.visited = False
 
     def reset(self) -> None:
+        """Open all walls for the cell."""
         self.N = False
         self.E = False
         self.S = False
@@ -19,7 +23,10 @@ class Cell:
 
 
 class MazeGenerator:
+    """Generate mazes using randomized depth-first carving."""
+
     def __init__(self) -> None:
+        """Initialize generator options and internal state."""
         self.width = 0
         self.height = 0
         self.entry: tuple = (0, 0)
@@ -29,6 +36,7 @@ class MazeGenerator:
         self.seed: int | None = None
 
     def set_patern_42(self):
+        """Mark a fixed 42-shaped blocked pattern in the maze."""
         x = (self.height - 5) // 2
         y = (self.width - 7) // 2
 
@@ -58,6 +66,7 @@ class MazeGenerator:
             self.maze[x + 2 + i][y + 4].is42 = True
 
     def generate_maze(self) -> list[list[Cell]]:
+        """Create and return a newly carved maze grid."""
         self.maze = [
             [Cell() for _ in range(self.width)] for _ in range(self.height)]
 
@@ -101,6 +110,7 @@ class MazeGenerator:
         return self.maze
 
     def _get_unvisited_neighbors(self, x: int, y: int) -> list:
+        """Return neighboring cells that have not been visited yet."""
         neighbors = []
         if y > 0 and not self.maze[y - 1][x].visited:
             neighbors.append((x, y - 1, 'N'))
@@ -114,6 +124,7 @@ class MazeGenerator:
 
     def _remove_wall(self, x: int, y: int, nx: int, ny: int,
                      direction: str) -> None:
+        """Remove walls between two adjacent cells by direction."""
         if direction == 'N':
             self.maze[y][x].N = False
             self.maze[ny][nx].S = False
@@ -128,6 +139,7 @@ class MazeGenerator:
             self.maze[ny][nx].E = False
 
     def set_maze_data(self, maze_data: MazeData) -> None:
+        """Load generation settings from parsed maze data."""
         self.width = maze_data.width
         self.height = maze_data.height
         self.entry = maze_data.entery
