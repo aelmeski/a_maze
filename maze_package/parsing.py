@@ -1,5 +1,6 @@
 import sys
 
+
 class MazeData:
     """Data container for maze configuration parameters."""
 
@@ -38,7 +39,7 @@ class Parsing:
 
     def __init__(self) -> None:
         """Initialize parser with default settings."""
-        self.error = "no error!"
+        self.error = "hey !"
         self.file_path = ""
         self.parameters: tuple[str] = (
             "WIDTH",
@@ -60,8 +61,13 @@ class Parsing:
             self.file_path = sys.argv[1]
             with open(self.file_path, "r") as file:
                 lines = file.readlines()
-        except (FileNotFoundError, Exception) as error:
-            self.error = str(error)
+            if not lines:
+                raise ValueError
+        except ValueError:
+            self.error = str("file config.txt is empty")
+            return None
+        except (FileNotFoundError, Exception):
+            self.error = str("file config.txt not found")
             return None
         return lines
 
