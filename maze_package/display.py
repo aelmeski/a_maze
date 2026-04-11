@@ -99,21 +99,26 @@ class Display:
         self.screen.addstr(y2, x2, "██", curses.color_pair(3))
 
     def display(self) -> None:
-        self.screen.clear()
+        try:
+            self.screen.clear()
 
-        for y, row in enumerate(self.maze):
-            for x, col in enumerate(row):
-                self.print_box(x, y, col)
+            for y, row in enumerate(self.maze):
+                for x, col in enumerate(row):
+                    self.print_box(x, y, col)
 
-        if self.show_path:
-            self.__print_path()
+            if self.show_path:
+                self.__print_path()
 
-        self.set_enter_exit()
+            self.set_enter_exit()
 
-        self.set_choices()
+            self.set_choices()
 
-        self.screen.refresh()
-        self.x += 1
+            self.screen.refresh()
+            self.x += 1
+        except curses.error:
+            self.screen.clear()
+            self.screen.addstr(0, 0, "Terminal too small! Please resize and try again.")
+            self.screen.refresh()
 
     def get_pressed_key(self) -> int:
         return self.screen.getch()

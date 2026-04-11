@@ -29,8 +29,8 @@ class MazeGenerator:
         self.seed: int | None = None
 
     def set_patern_42(self):
-        y = (self.width // 2) - 3
-        x = (self.height // 2) - 2
+        x = (self.height - 5) // 2
+        y = (self.width - 7) // 2
 
         for i in range(3):
             self.maze[x + i][y].visited = True
