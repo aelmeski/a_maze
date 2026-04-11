@@ -1,4 +1,5 @@
 import curses
+from typing import Any
 from .maze_generator import Cell
 from .parsing import MazeData
 import random
@@ -7,7 +8,7 @@ import random
 class Display:
     """Render the maze and menu in a curses screen."""
 
-    def __init__(self, screen) -> None:
+    def __init__(self, screen: Any) -> None:
         """Initialize display state and curses color pairs."""
         self.maze: list[list[Cell]] = []  # here we have the maze data
         self.screen = screen  # this where the maze screen is been stored
@@ -23,7 +24,7 @@ class Display:
         curses.init_pair(3, curses.COLOR_RED, 0)
 
         self.maze_data: MazeData | None = None
-        self.path: list[tuple] | None = None
+        self.path: list[tuple[int, int]] | None = None
         self.show_path = False
         self.x = 10
 
@@ -40,17 +41,19 @@ class Display:
         """Store the maze grid for rendering."""
         self.maze = maze
 
-    def set_path(self, path: list[tuple]) -> None:
+    def set_path(self, path: list[tuple[int, int]] | None) -> None:
         """Store the computed path to optionally draw."""
         self.path = path
 
-    def show_hide_path(self):
+    def show_hide_path(self) -> None:
         """Toggle path visibility and refresh the display."""
         self.show_path = not self.show_path
         self.display()
 
-    def __print_path(self):
+    def __print_path(self) -> None:
         """Draw the current solution path inside the maze."""
+        if self.path is None:
+            return
         for i in range(len(self.path)):
             x1 = self.path[i][0] * 4 + 1
             y1 = self.path[i][1] * 2 + 1
@@ -68,7 +71,7 @@ class Display:
         """Set metadata that includes entry and exit coordinates."""
         self.maze_data = maze_data
 
-    def print_box(self, x, y, cell: Cell) -> None:
+    def print_box(self, x: int, y: int, cell: Cell) -> None:
         """Draw one maze cell and its walls at screen coordinates."""
         box_x = x * 4
         box_y = y * 2
@@ -102,6 +105,9 @@ class Display:
 
     def set_enter_exit(self) -> None:
         """Highlight the entry and exit points in the maze."""
+        assert self.maze_data is not None
+        assert self.maze_data.entery is not None
+        assert self.maze_data.exit is not None
         x1 = self.maze_data.entery[0] * 4 + 1
         y1 = self.maze_data.entery[1] * 2 + 1
         self.screen.addstr(y1, x1, "██", curses.color_pair(2))
@@ -130,17 +136,17 @@ class Display:
             self.x += 1
         except curses.error:
             self.screen.clear()
-            self.screen.addstr(0, 0, "Terminal too small! Please resize and try again.")
+            self.screen.addstr(0, 0, "Terminal to smal! Plz resize try again.")
             self.screen.refresh()
 
     def get_pressed_key(self) -> int:
         """Return the next pressed key from the screen."""
-        return self.screen.getch()
+        return int(self.screen.getch())
 
     def __del__(self) -> None:
         """Ensure display resources are closed on deletion."""
         self.close()
 
-    def close(self):
+    def close(self) -> None:
         """Close display resources if cleanup is needed."""
         pass

@@ -7,7 +7,7 @@ from .save_maze import SaveMaze
 
 __version__ = "1.0.0"
 
-__all__ = [
+__all__: list[str] = [
     "Parsing",
     "MazeGenerator",
     "Display",

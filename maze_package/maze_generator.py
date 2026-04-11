@@ -29,13 +29,13 @@ class MazeGenerator:
         """Initialize generator options and internal state."""
         self.width = 0
         self.height = 0
-        self.entry: tuple = (0, 0)
-        self.exit: tuple = (0, 0)
+        self.entry: tuple[int, int] = (0, 0)
+        self.exit: tuple[int, int] = (0, 0)
         self.perfect = False
         self.maze: list[list[Cell]] = []
         self.seed: int | None = None
 
-    def set_patern_42(self):
+    def set_patern_42(self) -> None:
         """Mark a fixed 42-shaped blocked pattern in the maze."""
         x = (self.height - 5) // 2
         y = (self.width - 7) // 2
@@ -72,7 +72,7 @@ class MazeGenerator:
 
         self.set_patern_42()
 
-        stack = []
+        stack: list[tuple[int, int]] = []
         start_x, start_y = self.entry
         current = (start_x, start_y)
         self.maze[start_y][start_x].visited = True
@@ -109,9 +109,13 @@ class MazeGenerator:
 
         return self.maze
 
-    def _get_unvisited_neighbors(self, x: int, y: int) -> list:
+    def _get_unvisited_neighbors(
+        self,
+        x: int,
+        y: int
+    ) -> list[tuple[int, int, str]]:
         """Return neighboring cells that have not been visited yet."""
-        neighbors = []
+        neighbors: list[tuple[int, int, str]] = []
         if y > 0 and not self.maze[y - 1][x].visited:
             neighbors.append((x, y - 1, 'N'))
         if x < self.width - 1 and not self.maze[y][x + 1].visited:
@@ -140,6 +144,11 @@ class MazeGenerator:
 
     def set_maze_data(self, maze_data: MazeData) -> None:
         """Load generation settings from parsed maze data."""
+        assert maze_data.width is not None
+        assert maze_data.height is not None
+        assert maze_data.entery is not None
+        assert maze_data.exit is not None
+        assert maze_data.perfect is not None
         self.width = maze_data.width
         self.height = maze_data.height
         self.entry = maze_data.entery

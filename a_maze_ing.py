@@ -1,8 +1,9 @@
 import curses
+from typing import Any
 from maze_package import Parsing, MazeGenerator, Display, FindPath, SaveMaze
 
 
-def main(stdscr):
+def main(stdscr: Any) -> None:
     """Run the interactive maze generation application."""
     try:
         parsing = Parsing()
@@ -25,7 +26,7 @@ def main(stdscr):
         save_maze.set_enter(data.entery)
         save_maze.set_exit(data.exit)
 
-        def generate_maze():
+        def generate_maze() -> None:
             maze = maze_generator.generate_maze()
             bfs.set_maze(maze)
             path = bfs.get_path()

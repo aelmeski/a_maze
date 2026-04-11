@@ -8,8 +8,8 @@ class MazeData:
         """Initialize maze data with default values."""
         self.width: int | None = None
         self.height: int | None = None
-        self.entery: tuple | None = None
-        self.exit: tuple | None = None
+        self.entery: tuple[int, int] | None = None
+        self.exit: tuple[int, int] | None = None
         self.output_file: str | None = None
         self.perfect: bool | None = None
         self.seed: int | None = None
@@ -35,15 +35,22 @@ class MazeData:
         if self.width < 10:
             return f"the width '{self.width}' should be more or equal to 10!"
         if self.width > 100:
-            return f"the width '{self.width}' should be less then or equal to 100!"
+            return f"the width '{self.width}'\
+should be less then or equal to 100!"
         if self.height < 10:
             return f"the height '{self.height}' should be more or equal to 10!"
         if self.height > 100:
-            return f"the height '{self.height}' should be less then or equal to 100!"
-        if (self.entery[0] < 0 or self.entery[0] >= self.width or self.entery[1] < 0 or self.entery[1] >= self.height):
+            return f"the height '{self.height}'\
+should be less then or equal to 100!"
+        if (
+            self.entery[0] < 0 or self.entery[0] >= self.width or
+            self.entery[1] < 0 or self.entery[1] >= self.height
+        ):
             return f"the entry point {self.entery} is not in the maze map."
-        if (self.exit[0] < 0 or self.exit[0] >= self.width or
-            self.exit[1] < 0 or self.exit[1] >= self.height):
+        if (
+            self.exit[0] < 0 or self.exit[0] >= self.width or
+            self.exit[1] < 0 or self.exit[1] >= self.height
+        ):
             return f"the exit point {self.exit} is not in the maze map."
 
         if (self.is_in_patern42(self.entery)):
@@ -53,8 +60,10 @@ class MazeData:
 
         return None
 
-    def is_in_patern42(self, point: tuple) -> bool:
+    def is_in_patern42(self, point: tuple[int, int]) -> bool:
         """Check whether a point lies inside the blocked 42 pattern."""
+        assert self.height is not None
+        assert self.width is not None
         x = (self.height - 5) // 2
         y = (self.width - 7) // 2
         for i in range(3):
@@ -84,7 +93,7 @@ class Parsing:
         """Initialize parser with default settings."""
         self.error = "somthings went wrong !!"
         self.file_path = ""
-        self.parameters: tuple[str] = (
+        self.parameters: tuple[str, ...] = (
             "WIDTH",
             "HEIGHT",
             "ENTRY",
@@ -121,8 +130,8 @@ class Parsing:
         """Parse configuration file and return MazeData or None on error."""
         maze_data = MazeData()
 
-        lines: list[str] = self.__get_file_data()
-        if not lines:
+        lines = self.__get_file_data()
+        if lines is None:
             return None
 
         for line in lines:
@@ -145,20 +154,20 @@ class Parsing:
                 maze_data.width = num
 
             elif values[0] == "HEIGHT":
-                num: int | None = self.__get_int(values[1])
+                num = self.__get_int(values[1])
                 if not num:
                     return None
                 maze_data.height = num
 
             elif values[0] == "ENTRY":
-                xy: tuple | None = self.__is_xy(values[1])
+                xy: tuple[int, int] | None = self.__is_xy(values[1])
                 if xy is None:
                     self.error = f"Invalid entry value '{values[1]}'"
                     return None
                 maze_data.entery = xy
 
             elif values[0] == "EXIT":
-                xy: tuple | None = self.__is_xy(values[1])
+                xy = self.__is_xy(values[1])
                 if xy is None:
                     self.error = f"Invalid exit value '{values[1]}'"
                     return None
@@ -198,7 +207,7 @@ class Parsing:
             return None
         return maze_data
 
-    def __is_xy(self, value: str) -> tuple | None:
+    def __is_xy(self, value: str) -> tuple[int, int] | None:
         """Parse a comma-separated string into an (x, y) tuple."""
         values = value.split(',')
         if len(values) != 2:
