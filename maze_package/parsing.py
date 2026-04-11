@@ -62,8 +62,6 @@ should be less then or equal to 100!"
 
     def is_in_patern42(self, point: tuple[int, int]) -> bool:
         """Check whether a point lies inside the blocked 42 pattern."""
-        assert self.height is not None
-        assert self.width is not None
         x = (self.height - 5) // 2
         y = (self.width - 7) // 2
         for i in range(3):

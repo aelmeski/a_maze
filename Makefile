@@ -4,7 +4,7 @@ CONFIG = config.txt
 
 install:
 	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install flake8 mypy curses
+	$(PYTHON) -m pip install flake8 mypy
 
 run:
 	$(PYTHON) $(MAIN) $(CONFIG)
@@ -19,4 +19,4 @@ lint:
 	flake8 .
 	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
-.PHONY: install run debug clean lint lint-strict
+.PHONY: install run debug clean lint

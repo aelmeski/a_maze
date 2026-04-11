@@ -144,11 +144,6 @@ class MazeGenerator:
 
     def set_maze_data(self, maze_data: MazeData) -> None:
         """Load generation settings from parsed maze data."""
-        assert maze_data.width is not None
-        assert maze_data.height is not None
-        assert maze_data.entery is not None
-        assert maze_data.exit is not None
-        assert maze_data.perfect is not None
         self.width = maze_data.width
         self.height = maze_data.height
         self.entry = maze_data.entery

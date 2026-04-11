@@ -52,8 +52,6 @@ class Display:
 
     def __print_path(self) -> None:
         """Draw the current solution path inside the maze."""
-        if self.path is None:
-            return
         for i in range(len(self.path)):
             x1 = self.path[i][0] * 4 + 1
             y1 = self.path[i][1] * 2 + 1
@@ -105,9 +103,6 @@ class Display:
 
     def set_enter_exit(self) -> None:
         """Highlight the entry and exit points in the maze."""
-        assert self.maze_data is not None
-        assert self.maze_data.entery is not None
-        assert self.maze_data.exit is not None
         x1 = self.maze_data.entery[0] * 4 + 1
         y1 = self.maze_data.entery[1] * 2 + 1
         self.screen.addstr(y1, x1, "██", curses.color_pair(2))
