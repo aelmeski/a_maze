@@ -134,7 +134,7 @@ class Display:
 
         except curses.error:
             self.screen.clear()
-            self.screen.addstr(0, 0, "Terminal too small. Plz resize and try again.")
+            self.screen.addstr(0, 0, "Terminal too small. Plz resize & retry.")
             self.screen.refresh()
 
     def get_pressed_key(self) -> int:
