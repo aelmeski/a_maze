@@ -19,6 +19,7 @@ class Display:
 
         # colors
         curses.start_color()
+        curses.init_pair(4, curses.COLOR_YELLOW, 0)
         curses.init_pair(1, curses.COLOR_BLUE, 0)
         curses.init_pair(2, curses.COLOR_GREEN, 0)
         curses.init_pair(3, curses.COLOR_RED, 0)
@@ -26,7 +27,6 @@ class Display:
         self.maze_data: MazeData | None = None
         self.path: list[tuple[int, int]] | None = None
         self.show_path = False
-        self.x = 10
 
     def change_colors(self) -> None:
         """Shuffle the maze color palette and redraw the screen."""
@@ -52,6 +52,9 @@ class Display:
 
     def __print_path(self) -> None:
         """Draw the current solution path inside the maze."""
+        if not self.path:
+            return
+
         for i in range(len(self.path)):
             x1 = self.path[i][0] * 4 + 1
             y1 = self.path[i][1] * 2 + 1
@@ -89,7 +92,7 @@ class Display:
         if cell.W:
             self.screen.addstr(box_y+1, box_x, "█", curses.color_pair(1))
         if cell.is42:
-            self.screen.addstr(box_y+1, box_x+1, "██", curses.color_pair(2))
+            self.screen.addstr(box_y+1, box_x+1, "██", curses.color_pair(4))
 
     def set_choices(self) -> None:
         """Render the command menu below the maze."""
@@ -128,10 +131,10 @@ class Display:
             self.set_choices()
 
             self.screen.refresh()
-            self.x += 1
+
         except curses.error:
             self.screen.clear()
-            self.screen.addstr(0, 0, "Terminal to smal! Plz resize try again.")
+            self.screen.addstr(0, 0, "Terminal too small. Plz resize and try again.")
             self.screen.refresh()
 
     def get_pressed_key(self) -> int:

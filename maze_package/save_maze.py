@@ -36,6 +36,8 @@ class SaveMaze:
 
     def save_to_file(self) -> None:
         """Write maze walls, endpoints, and path directions to disk."""
+        if self.maze is None or self.enter is None or self.exit is None:
+            return
         with open(self.output_file, 'w') as file:
             base16 = "0123456789ABCDEF"
             for array in self.maze:

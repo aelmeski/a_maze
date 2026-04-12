@@ -117,10 +117,13 @@ class Parsing:
             if not lines:
                 raise ValueError
         except ValueError:
-            self.error = str("file 'config.txt' is empty")
+            self.error = f"file '{self.file_path}' is empty"
             return None
-        except (FileNotFoundError, Exception):
-            self.error = str("file 'config.txt' not found")
+        except FileNotFoundError:
+            self.error = f"file '{self.file_path}' not found"
+            return None
+        except Exception as error:
+            self.error = f"could not read file '{self.file_path}': {error}"
             return None
         return lines
 
@@ -147,13 +150,13 @@ class Parsing:
 
             if values[0] == "WIDTH":
                 num: int | None = self.__get_int(values[1])
-                if not num:
+                if num is None:
                     return None
                 maze_data.width = num
 
             elif values[0] == "HEIGHT":
                 num = self.__get_int(values[1])
-                if not num:
+                if num is None:
                     return None
                 maze_data.height = num
 
@@ -209,7 +212,7 @@ class Parsing:
         """Parse a comma-separated string into an (x, y) tuple."""
         values = value.split(',')
         if len(values) != 2:
-            self.erorr = f"Invalid Coordinates '{value}'"
+            self.error = f"Invalid Coordinates '{value}'"
             return None
         x: int | None = self.__get_int(values[0])
         y: int | None = self.__get_int(values[1])
